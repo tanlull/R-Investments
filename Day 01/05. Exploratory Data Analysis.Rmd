@@ -1,0 +1,123 @@
+---
+title: "Exploratory Data Analysis"
+output: html_notebook
+---
+
+##Exploratory data analysis (EDA) the very first step in a data project
+
+*** Step 1: First approach to data ***
+
+Quickly explore mtcars dataset
+
++ Variables in correct data types?
+
++ Missing values/ zeros/ NAs? 
+
++ Size of data
+
+```{r}
+#Loading
+data(mtcars)
+#structure of a dataset
+str(mtcars)
+```
+
+```{r}
+summary(mtcars)
+```
+
+```{r}
+head(mtcars) #default shows first 6 rows
+```
+
+
+```{r}
+tail(mtcars, 3)
+```
+
+```{r}
+nrow(mtcars)
+```
+
+```{r}
+ncol(mtcars)
+```
+
+```{r}
+dim(mtcars)
+```
+
+
+*** Step 2: Explore categorical variables ***
+
++ Does all the categories make sense?
+
+```{r}
+table(mtcars$cyl)
+```
+
+
+*** Step 3: Explore numerical variables ***
+
+
+Find the total value of each column
+```{r}
+colSums(mtcars)
+```
+
+
+
+Find an average of each column
+```{r}
+colMeans(mtcars)
+```
+
+
+Explore specific variable
+```{r}
+sum(mtcars$wt)
+sum(mtcars[,6])
+
+```
+
+```{r}
+mean(mtcars$mpg)
+mean(mtcars[,1])
+```
+
+
+Correlation of variables
+```{r}
+cor(mtcars$hp, mtcars$mpg)
+```
+
+
+Names of each column/each row
+```{r}
+colnames(mtcars)
+```
+
+```{r}
+rownames(mtcars)
+```
+
+
+*** Step 4: Quick visualization to explore the dataset***
+
+
+```{r}
+plot(x = mtcars$hp, y = mtcars$mpg, type = "p", col = "red")
+```
+
+```{r}
+barplot(table(mtcars$cyl))
+```
+
+
+
+```{r}
+plot(mtcars)
+```
+
+
+

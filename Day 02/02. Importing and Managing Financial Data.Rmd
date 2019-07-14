@@ -1,0 +1,110 @@
+---
+title: "Importing and Managing Financial Data in R"
+output: html_notebook
+---
+
+##Install relevant R packages
+```{r}
+install.packages('quantmod')
+install.packages('Quandl')
+install.packages('zoo')
+install.packages('xts')
+```
+
+Load library
+```{r}
+library(quantmod)
+library(Quandl)
+library(zoo)
+library(xts)
+```
+
+##Getting financial data with function getSymbols() from Yahoo Finance
+
+Load PTTEP trading data from 2015 to 2018
+```{r}
+PTTEP <- getSymbols(Symbols = 'PTTEP.BK', src = 'yahoo', auto.assign = FALSE, warnings = FALSE, from = "2015-01-01", to = Sys.Date()) #Use to = Sys.Date() to download data until today
+tail(PTTEP)
+class(PTTEP)
+```
+
+
+
+Other data sources include
+
++ FRED: Federal Reserves Economic Data
+
++ OANDA: Foreign Exchange Data
+
++ Google Finance: No longer supporting
+
++ CSV File
+
+
+You can also load financial data from CSV file
+```{r}
+
+#if cannot load data from yahoo, use csv file
+
+#PTTEP <- read.zoo("data/PTTEP.csv", sep = ',', header = T)
+#head(PTTEP)
+
+```
+
+
+**Explore financial data loaded**
+
+OHLC: Open High Low Close
+
++ Open: Fist observed price
+
++ Close: Last observed price
+
++ High: Largest observed price
+
++ Low: Smallest observed price
+
++ Volume: Sum of contracts/shares traded
+
++ Adjusted Close: Closing price that has been adjusted to include corporate's action before the next day open e.g. stock splits, dividen, rights offerings 
+
+
+**Function to extract a column or columns from loaded financial data**
+
++ Op() - open price
+
++ Hi() - High price
+
++ Lo() - Low price
+
++ Cl() - Close price
+
++ Vo() - Volume traded
+
++ Ad() - Adjusted close price
+
++ OHLC() - Open/High/Low/Close price
+
+```{r}
+pttep.open <- Op(PTTEP)
+head(pttep.open)
+```
+
+```{r}
+pttep.ad.close <- Ad(PTTEP)
+head(pttep.ad.close, n = 10)
+```
+
+```{r}
+pttep.ohlc <- OHLC(PTTEP)
+head(pttep.ohlc)
+```
+
+```{r}
+#Visualize time series data
+plot(Ad(PTTEP))
+```
+
+
+
+

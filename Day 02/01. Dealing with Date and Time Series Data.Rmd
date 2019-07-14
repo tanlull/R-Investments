@@ -1,0 +1,88 @@
+---
+title: "Dealing with Date"
+output: html_notebook
+---
+
+
+**Dealing with date**
+```{r}
+#Get today's date
+today <- Sys.Date()
+today
+```
+
+```{r}
+class(today)
+```
+
+Convert character to date
+```{r}
+Character_date <- "2018-12-25"
+class(Character_date)
+```
+
+```{r}
+Christmas <- as.Date(Character_date)
+Christmas
+```
+
+When printing, Character_date looks like Christmas. If we check, they are in different class.
+```{r}
+class(Christmas)
+```
+
+**Date Formats**
+```{r}
+#ISO 8601 Standard: YYYY-MM-DD
+Dday <- as.Date("2018-12-25")
+Dday
+class(Dday)
+```
+
+```{r}
+#Alternative Form: YYYY/MM/DD
+Dday2 <- as.Date("2018/12/25")
+Dday2
+class(Dday2)
+```
+
+R cannot convert character string to date if it's not in the correct format.
+```{r}
+#Fail example
+Dday3 <- as.Date("12/25/2018") #MM/DD/YYYY
+Dday3
+```
+
+To fix this, we need to explicitly tell R the format we're using.
+```{r}
+Dday4 <- as.Date("12/25/2018", format = "%m/%d/%Y")
+Dday4
+class(Dday4)
+```
+
+**Date Formats**
+
++ %d - day of month (01-31)
+
++ %m - month (01 - 12)
+
++ %y - year 2 digits (00 - 99)
+
++ %Y - year 4 digits (0 - 9999)
+
++ %b - abbreviated month name (Jan, Feb, ...)
+
++ %B - full month name (April, May, ...)
+
+**Day of week**
+```{r}
+weekdays(Sys.Date())
+Sys.Date()
+Sys.time()
+```
+
+```{r}
+Songkran <- as.Date("2019-04-13")
+weekdays(Songkran)
+```
+

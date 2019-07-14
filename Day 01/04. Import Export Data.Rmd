@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+getwd()
+```
+
+```{r}
+setwd("E:/Training/R for Investment/Day 01")
+```
+
+```{r}
+data <- read.table("./data/baltimore.csv", sep = ",", header = TRUE, fill = TRUE)
+head(data, n = 3)
+```
+
+
+```{r}
+data2 <- read.csv("./data/baltimore.csv")
+head(data2, n = 3)
+
+```
+
+** Writing data to a file **
+
++ write data from R to a txt file: write.table( )
++ write data from R to a csv file: write.csv( )
+```{r}
+#Load mtcars data
+data(mtcars)
+#Export mtcars data to text file
+write.table(mtcars, file = "./data/mtcars.txt", sep = "\t", row.names = TRUE, col.names = NA)
+list.files("./data")  #show a list of files in data foler within the working directory
+```
+
+```{r}
+write.csv(mtcars, file = "./data/mtcars.csv")
+list.files("./data")  #show a list of files in data foler within the working directory
+```
+
+** Saving Plots in R **
+```{r}
+x <- 1:10
+y <- 2*x + 5
+
+jpeg("./data/rplot.jpg")
+plot(x, y)
+dev.off()
+list.files("./data")
+```
+

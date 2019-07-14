@@ -1,0 +1,85 @@
+---
+title: "Writing R Functions"
+output: html_notebook
+---
+
+```{r}
+square.this <- function(x){
+  square <- x^2
+  return(square)  
+}
+
+square.this(5)
+```
+
+```{r}
+square.this <- function(x = 2){
+  square <- x^2
+  return(square)
+}
+
+square.this()
+```
+```{r}
+square.this(3)
+```
+
+
+```{r}
+sum.this <- function(x1, x2){
+  x1 + x2
+  
+}
+
+sum.this(2, 3)
+```
+
+```{r}
+sum.this <- function(x1, x2){
+  x1 + x2
+  x1 - x2
+  
+}
+
+sum.this(2, 3)
+```
+
+```{r}
+square.again <- function(x){
+  return(x^2)
+  
+  #Other statements after explicit 'return' 
+  return(x + 3)
+  
+}
+
+square.again(5)
+```
+
+
+Return Vector
+```{r}
+operation.results <- function(x1, x2){
+  add      <- x1 + x2
+  minus    <- x1 - x2
+  multiply <- x1 * x2
+  divide   <- x1 / x2
+  
+  return(c(add, minus, multiply, divide))
+}
+
+operation.results(10, 5)
+```
+
+```{r}
+do.call("operation.results", args = list(x1 = 10, x2 = 5))
+```
+
+```{r}
+do.call("square.this", args = list(4))
+```
+
+```{r}
+do.call("square.this", args = list(c(4,3,2)))
+```
+

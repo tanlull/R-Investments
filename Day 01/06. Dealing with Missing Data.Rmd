@@ -1,0 +1,93 @@
+---
+title: "Dealing with Missing Data"
+output: html_notebook
+---
+
+**Install Packages**
+```{r}
+install.packages('quantmod')
+install.packages('xts')
+install.packages('zoo')
+
+```
+
+```{r}
+#load library
+library(quantmod)
+library(xts)
+library(zoo)
+```
+
+**Handling Missing Data**
+```{r}
+#Load data
+NAdata <- read.csv("data/PTTEP_NA.csv", stringsAsFactors = FALSE, sep = ",", header = TRUE)
+head(NAdata)
+dim(NAdata)
+```
+
+Convert to xts
+```{r}
+NAdata[,1] <- as.Date(NAdata[,1]) #change character to date
+NAdata.xts <- as.xts(NAdata[,2], order.by = NAdata$Index)
+head(NAdata.xts)
+#head(NAdata)
+```
+
+
+```{r}
+#Check NAs in data
+sum(is.na(NAdata.xts))
+```
+
+```{r}
+plot(NAdata.xts)
+```
+
+```{r}
+nrow(NAdata.xts)
+```
+
+
+```{r}
+#Remove NAs
+omit <- na.omit(NAdata.xts)
+nrow(omit)
+```
+```{r}
+plot(omit)
+```
+
+
+
+```{r}
+#Interpolate
+approx <- na.approx(NAdata.xts)
+nrow(approx)
+```
+
+```{r}
+plot(approx)
+```
+
+
+Fill NAs with last observation - l.o.c.f. = Last Observation Carried Forward, n.o.c.b. = Next Observation Carried Backward
+```{r}
+locf <- na.locf(NAdata.xts, fromLast = FALSE)
+nrow(locf)
+```
+
+```{r}
+plot(locf)
+```
+
+
+```{r}
+nocb <- na.locf(NAdata.xts, fromLast = TRUE)
+nrow(nocb)
+```
+
+```{r}
+plot(nocb)
+```
+

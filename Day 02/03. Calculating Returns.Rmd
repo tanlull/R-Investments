@@ -1,0 +1,94 @@
+---
+title: "Calculating Return and Share Ratio"
+output: html_notebook
+---
+
+*** Load package ***
+```{r}
+library(quantmod)
+```
+
+
+***Getting data***
+```{r}
+aot   <- getSymbols(Symbols = 'AOT.BK', src = 'yahoo', auto.assign = FALSE, warnings = FALSE, from = "2013-01-01", to = "2018-12-31")
+price <- Ad(aot)
+head(price, n = 3)
+```
+
+
+*** Calculate Return ***
+
++ Simple return
+
++ Log return
+
+Calculate daily returns
+```{r}
+#Simple Return
+returns <- periodReturn(price, period = 'daily', type = 'arithmetic', leading = FALSE)
+head(returns)
+
+```
+
+```{r}
+#Simple Return
+returns <- periodReturn(price, period = 'daily', type = 'arithmetic', leading = TRUE)
+head(returns)
+
+```
+
+```{r}
+#Log Return
+log.returns <- periodReturn(price, period = 'daily', type = 'log', leading = FALSE)
+head(log.returns)
+```
+
+```{r}
+log.returns <- periodReturn(price, period = 'monthly', type = 'log', leading = FALSE)
+head(log.returns)
+```
+
+
+**Other function to calculate returns**
+
++ dailyReturn()
+
++ weeklyReturn()
+
++ monthlyReturn()
+
++ quarterlyReturn()
+
++ annualReturn()
+
++ allReturns()
+
+
+Daily Return
+```{r}
+d  <- dailyReturn(price, type = 'arithmetic', leading = FALSE)
+head(d, n = 5)
+
+```
+
+```{r}
+d2 <- periodReturn(price, period = 'daily', type = 'arithmetic')
+head(d2, n = 5)
+```
+
+
+monthly Return - use the price of last day of the month
+```{r}
+m <- monthlyReturn(price, type = 'arithmetic', leading = FALSE)
+head(m, n = 5)
+```
+
+```{r}
+m2 <- periodReturn(price, period = 'monthly', type = 'arithmetic')
+head(m2, n = 5)
+```
+
+
+
+

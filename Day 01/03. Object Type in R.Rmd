@@ -1,0 +1,177 @@
+---
+title: "Object type in R"
+output: html_notebook
+---
+
+## What is R
+R is an object-oriented programming language focused on analyzing and manipulating data. Everything in R is an object such as datasets, functions, plots, etc. R is one of the most popular language used by statisticians and data scientist. Thus, there're a lot of support communitites.
+
+In this course, we'll use RStudio IDE for learning about R and financial analysis in R.
+
+To download R, go to "https://cran.r-project.org/".
+To download RStudio, go to "https://www.rstudio.com/products/rstudio/".
+
+### Assigning Object in R: R objects can be assigned using the operator "<-" or "=". However, "<-" is preferred.
+Object names can begin with letter. The name can contain letters, numbers, underscores, and periods.
+
+### Object Type
+
+Numeric
+```{r}
+#Integer
+myint <- 5
+typeof(myint)
+print(myint)
+```
+
+
+```{r}
+#Double
+mydouble <- 2.3
+print(mydouble)
+```
+
+
+
+Character
+```{r}
+mytext  <- "Hello World!" #Can use both " " and ' '
+print(mytext)
+```
+
+Logical
+```{r}
+myanswer <- TRUE
+myanswer
+```
+
+
+**Vector**
+
+Construct vector manually. c() - concatenate()
+```{r}
+myvector  <- c(1,2,3,4,5)
+print(myvector)
+```
+
+Sequence of consecutive integers.
+```{r}
+myvector2 <- 1:10
+print(myvector2)
+```
+
+```{r}
+#Create a vector of intergers from 10 to 20. Name it 'vector10.20'
+
+vector10.20 <- 1:20
+vector10.20  
+```
+
+
+Sequence - construc sequencing vector with function seq().
+```{r}
+myseq <- seq(from = 0, to = 20, by = 5)
+print(myseq)
+```
+
+```{r}
+#Create a sequencing vector of even number from 2 to 20. Use function seq( ). Name it 'even'.
+
+even <- seq(from = 2, to = 20, by = 2)
+print(even)
+```
+
+
+```{r}
+myseq2 <- seq(0, 10, length.out = 21)
+print(myseq2)
+```
+
+Repeated object
+```{r}
+myrep  <- rep(0, length.out = 6)
+print(myrep)
+```
+
+```{r}
+#Create a vector of number 1, repeating 10 times. Name it 'ones'.
+
+ones <- rep(1, length.out = 10)
+print(ones)
+```
+
+
+
+Indexing
+```{r}
+myvector3 <- c(1,3,5,7,9)
+print(myvector3[3])
+```
+
+
+```{r}
+print(myvector3[3:5])
+```
+
+```{r}
+print(myvector3[c(-1,-2)])
+```
+
+```{r}
+myvector3[c(1,4)]
+```
+
+
+
+Character Vector
+```{r}
+Name <- c("Captain America", "Iron Man", "Black Widow", "Thor", "Scarlet Witch")
+print(Name)
+print(Name[3])
+```
+
+Factor
+```{r}
+gender <- c("m", "m", "f", "m", "f")
+gender <- factor(gender)
+str(gender)
+```
+
+
+** Matrix vs data frame **
+Matrix is similar to data frame but all the values are numeric.
+
+Matrix
+```{r}
+matrixA <- matrix(1:15, nrow = 3, ncol = 5, byrow = TRUE)
+matrixA
+```
+
+```{r}
+matrixB <- matrix(1:15, nrow = 3, ncol = 5, byrow = FALSE)
+matrixB
+```
+
+
+
+
+Construct data frame
+```{r}
+cast <- c("Chris Evans", "Robert Downey Jr.", "Scarlett Johansson", "Chris Hemsworth", "Elizabeth Olsen")
+age  <- c(37, 53, 34, 35, 29)
+
+Marvel.data <- data.frame(Name, gender, cast, age) #'Name' and 'gender' were created previously.
+Marvel.data
+```
+
+
+List
+```{r}
+Marvel.list <- list(Name, gender, cast, TRUE, 1804)
+Marvel.list
+```
+
+Calling element in list
+```{r}
+Marvel.list[[1]]
+```

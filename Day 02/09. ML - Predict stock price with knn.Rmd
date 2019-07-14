@@ -1,0 +1,111 @@
+---
+title: "Machine learning - Predict stock price with k Nearest Neighbors"
+output: html_notebook
+---
+
+**Install and load packages **
+```{r}
+#install.packages("quantmod")
+#install.packages("xts")
+#install.packages("zoo")
+#install.packages("PerformanceAnalytics")
+
+library(xts)
+library(zoo)
+library(quantmod)
+library(PerformanceAnalytics)
+
+#Package for performing knn
+#install.packages("class")
+library(class)
+```
+
+```{r}
+#prediction <- knn(training_Data, test_Data, training_labels, k = 1)
+```
+
+
+** Get historical data of the chosen stock **
+```{r}
+aot   <- getSymbols(Symbols = 'AOT.BK', src = 'yahoo', 
+                  auto.assign = FALSE, getSymbols.warnings4.0 = FALSE, from = "2016-01-01", to = "2019-01-11")
+data  <- Ad(aot)
+head(data)
+```
+
+
+*** Calculate returns ***
+```{r}
+dailyreturn <- periodReturn(data, period = 'daily', type = 'arithmetic', leading = FALSE)
+#daily return compare adjusted close price of day t and day t-1. Lag = 1
+
+returnLag2  <- lag(dailyreturn, k = 1) #lag 1 from dailyreturn is lag 2 from day t.
+returnLag3  <- lag(dailyreturn, k = 2) #lag 2 from dailyreturn is lag 3 from day t.
+
+data2       <- cbind(data, dailyreturn, returnLag2, returnLag3)
+colnames(data2) <- c("price", "returnLag1", "returnLag2", "returnLag3")
+head(data2)
+```
+
+*** Status of the next day ***
+```{r}
+data2$lead        <- lag(dailyreturn, k = -1) #next day return from historical data
+data2$direction   <- ifelse(data2$lead > 0, 1, 0) # 1 = UP, 0 = DOWN
+data2             <- na.omit(data2)
+head(data2, n = 10)
+```
+
+*** Divide data to training data and test data ***
+```{r}
+#Subset data as a train_set and a test_set
+nTrain       <- 500
+trainset     <- data2[1:nTrain, ] #Use row 1 to row nTrain as a training set
+testset      <- data2[(nTrain + 1):nrow(data2), ]
+trainLabels  <- trainset$direction
+```
+
+knn
+```{r}
+Prediction <- knn(train = trainset[,2:4], test = testset[ , 2:4], cl = trainLabels)
+Prediction[1:10]
+```
+
+
+```{r}
+table(testset$direction, Prediction)
+```
+
+```{r}
+accuracy    <- (84 + 49)/(84 + 62 + 40 + 49)
+print(paste("accuracy", round(accuracy, digits = 2)))
+
+sensitivity <- (49)/(49 + 40)
+print(paste("sensitivity", round(sensitivity, digits = 2)))
+
+specificity <- (84)/(84 + 62)
+print(paste("specificity", round(specificity, digits = 2)))
+```
+
+*** What if k > 1 ***
+```{r}
+Prediction_k <- knn(train = trainset[,2:4], test = testset[ , 2:4], cl = trainLabels, k = 100)
+Prediction_k[1:10]
+```
+
+
+```{r}
+t <- table(testset$direction, Prediction_k)
+t
+```
+
+```{r}
+accuracy    <- (t[1,1] + t[2,2])/sum(t)
+print(paste("accuracy", round(accuracy, digits = 2)))
+
+sensitivity <- t[2,2]/sum(t[2,])
+print(paste("sensitivity", round(sensitivity, digits = 2)))
+
+specificity <- t[1,1]/sum(t[1,])
+print(paste("specificity", round(specificity, digits = 2)))
+```
+

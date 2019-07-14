@@ -1,0 +1,148 @@
+---
+title: "02. Basic Operations"
+output: html_notebook
+---
+
+## Basic Operations
+
+Calculation
+```{r}
+a <- 10
+b <- 5
+a + b
+```
+
+```{r}
+c <- a - b
+c
+```
+
+```{r}
+d <- a * b
+d
+```
+
+```{r}
+e <- a/b
+e
+```
+
+
+```{r}
+f <- paste(c,d,e,sep=",")
+f
+```
+
+```{r}
+3^2
+```
+
+```{r}
+20 %% 3
+```
+
+```{r}
+7%/%2
+```
+
+
+*** Try Using R as your calculator ***
+speed = 60 km/hr
+time  = 2 hr
+calculate the distance
+```{r}
+speed    <- 60
+time     <- 2
+  
+distance <- 60*2
+distance
+```
+
+
+
+
+Vector Calculation
+```{r}
+a <- c(1,3,5,7,9)
+b <- c(1,2,3,4,5)
+a + 3
+```
+
+```{r}
+a + b
+```
+
+```{r}
+a * b
+```
+
+```{r}
+a ^ b
+```
+
+Relational Operator
+
++ >  - Greater than
+
++ >= - Greater than or equal to
+
++ <  - Less than
+
++ <= - Less than or equal to
+
++ == - Equal
+
++ != - Not equal
+
+```{r}
+a <- 5
+a == 5
+```
+
+
+```{r}
+a > 8
+```
+
+
+```{r}
+aot <- c(63.75, 64.25, 64.50, 65.25, 65.00)
+aot > 64
+```
+
+Logical Operator
+
++ &  - And
+
++ |  - Or
+
++ !  - Not
+```{r}
+a <- c(1, 2, 3)
+b <- c(1, 3, 5)
+(a >= 3) & (b >= 3)
+```
+
+```{r}
+(a >= 3) && (b >= 3)
+```
+
+```{r}
+answer <- c(TRUE, TRUE, FALSE, TRUE, FALSE)
+!answer
+```
+
+```{r}
+(a >= 3) | (b >= 3)
+```
+
+
+```{r}
+(a >= 3) || (b >= 3)
+```
+
+```{r}
+x <- c(TRUE, FALSE, 0, 5, T)
+!x
+```
+

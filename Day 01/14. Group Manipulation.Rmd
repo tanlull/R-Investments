@@ -1,0 +1,50 @@
+---
+title: "Apply Family"
+output: html_notebook
+---
+
+**Group Manipulation**
+
+apply()
+```{r}
+data <- matrix(c(1:10, 21:30), nrow = 5, ncol = 4)
+data
+```
+
+```{r}
+#Margin =1 => Apply Row
+#Margin =2 => Apply Column
+apply(data, MARGIN = 1, FUN = mean)
+```
+
+```{r}
+apply(data, 2, mean)
+```
+
+lapply() and sapply()
+```{r}
+myList <- list(A = matrix(1:9, 3), B = 1:5, C = matrix(1:4, 2), D = 2)
+myList
+```
+
+```{r}
+lapply(myList, sum)
+```
+
+```{r}
+sapply(myList, sum)
+```
+
+```{r}
+data(mtcars)
+head(mtcars)
+```
+
+```{r}
+aggregate(mpg ~ cyl, mtcars, mean)
+```
+
+```{r}
+aggregate(mpg ~ cyl + gear, mtcars, mean)
+```
+

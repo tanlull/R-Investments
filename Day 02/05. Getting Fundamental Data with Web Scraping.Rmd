@@ -1,0 +1,102 @@
+---
+title: "Getting Fundamental Data with Web Scraping"
+output: html_notebook
+---
+
+**Install and load pakage
+```{r}
+#install.packages("rvest")
+#install.packages("xml2")
+library(rvest)
+library(xml2)
+```
+
+**Get statistics of fundamental data**
+
+Get url
+```{r}
+url        <- "https://finance.yahoo.com/quote/SCB.BK/key-statistics?p=SCB.BK"
+```
+
+1. Download the HTML and turn it into an XML file with read_html( )
+```{r}
+node       <- read_html(url)
+class(node)
+```
+
+2. Extract specific nodes with html_nodes( )
+```{r}
+info       <- html_nodes(node, css = 'table')
+class(info)
+```
+```{r}
+info
+
+```
+
+3. Extract contents from nodes with html_table( )
+```{r}
+statistics <- html_table(info, header = F)
+class(statistics)
+length(statistics)
+```
+
+
+View scraped information
+
+```{r}
+statistics
+```
+
+
+PE Ratio and PB Ratio
+```{r}
+Valuation <- statistics[[1]]
+Valuation
+class(Valuation)
+```
+
+
+Dividend
+```{r}
+DivTable  <- statistics[[4]]
+DivTable
+```
+
+```{r}
+PE        <- Valuation[3,2]
+PB        <- Valuation[7,2]
+Dividend  <- DivTable[4,2]
+
+print('P/E Ratio')
+PE
+print('P/B Ratio')
+PB
+print('Dividend')
+Dividend
+```
+
+```{r}
+#Create function to extract PE Ratio, P/B Ratio, and Dividend from Yahoo Finance
+get_fundamental <- function(sym){
+  url       <- paste0("https://finance.yahoo.com/quote/", sym, "/key-statistics?p=", sym)
+  ticker    <- read_html(url)
+  info      <- html_nodes(ticker, css = 'table')
+  Valuation <- html_table(info, header = F)[[1]]
+  DivTable  <- html_table(info, header = F)[[4]]
+  PE        <- Valuation[3,2]
+  PB        <- Valuation[7,2]
+  Dividend  <- DivTable[4,2]
+  fundamental <- (c(PE, PB, Dividend))
+  return(fundamental)
+  Sys.sleep(5)
+}
+```
+
+
+```{r}
+stock <- c("PTT.BK", "SCG.BK", "SCB.BK","CPALL.BK","PTTGC.BK","")
+Fundamental.data <- sapply(stock, FUN = get_fundamental)
+Fundamental.data
+```
+

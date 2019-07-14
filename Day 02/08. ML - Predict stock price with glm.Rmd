@@ -1,0 +1,112 @@
+---
+title: "Machine learning - Predict stock price with logistic regression"
+output: html_notebook
+---
+
+**Install and load packages **
+```{r}
+#install.packages("quantmod")
+#install.packages("xts")
+#install.packages("zoo")
+#install.packages("PerformanceAnalytics")
+library(xts)
+library(zoo)
+library(quantmod)
+library(PerformanceAnalytics)
+```
+
+
+** Get historical data of the chosen stock **
+```{r}
+aot   <- getSymbols(Symbols = 'AOT.BK', src = 'yahoo', 
+                  auto.assign = FALSE, getSymbols.warnings4.0 = FALSE, from = "2016-01-01", to = "2019-01-11")
+data  <- Ad(aot)
+head(data)
+```
+
+*** Calculate returns ***
+```{r}
+dailyreturn <- periodReturn(data, period = 'daily', type = 'arithmetic', leading = FALSE)
+#daily return compare adjusted close price of day t and day t-1. Lag = 1
+head(dailyreturn)
+
+returnLag2  <- lag(dailyreturn, k = 1) #lag 1 from dailyreturn is lag 2 from day t.
+returnLag3  <- lag(dailyreturn, k = 2) #lag 2 from dailyreturn is lag 3 from day t.
+
+data2       <- cbind(data, dailyreturn, returnLag2, returnLag3)
+colnames(data2) <- c("price", "returnLag1", "returnLag2", "returnLag3")
+head(data2)
+```
+
+
+
+*** Status of the next day ***
+```{r}
+data2$lead        <- lag(dailyreturn, k = -1) #next day return from historical data
+data2$direction   <- ifelse(data2$lead > 0, 1, 0) # 1 = UP, 0 = DOWN
+data2             <- na.omit(data2)
+head(data2, n = 10)
+```
+
+*** Train your model ***
+```{r}
+#Subset data as a train_set and a test_set
+nTrain    <- 500
+trainset  <- data2[1:nTrain, ] #Use row 1 to row nTrain as a training set
+
+#train logistic regression model between direction and returnLag1/2/3
+model     <- glm(direction ~ returnLag1 + returnLag2 + returnLag3, family = "binomial", data = trainset)
+model
+```
+
+
+*** Apply the model to a test set ***
+```{r}
+testset     <- data2[(nTrain + 1):nrow(data2), ]
+testcase    <- predict.glm(model, newdata = testset[ , 1:(ncol(data2)-2)], type = "response")
+testcase[1:10]
+```
+
+*** Apply threshold to the predicted results ***
+```{r}
+threshold   <- 0.5 #if predicted testcase > threshold, predict as "UP". Otherwise, predice as "DOWN"
+status.test <- ifelse(testcase >= threshold, 1, 0)
+status.test[1:10]
+```
+
+
+*** Check accuracy of the prediction ***
+```{r}
+table(testset$direction, status.test)
+```
+
+```{r}
+accuracy    <- (108 + 27)/(108 + 38 + 62 + 27)
+print(paste("accuracy", round(accuracy, digits = 2)))
+
+sensitivity <- (27)/(27 + 62)
+print(paste("sensitivity", round(sensitivity, digits = 2)))
+
+specificity <- (108)/(108 + 38)
+print(paste("specificity", round(specificity, digits = 2)))
+```
+
+*** Set threshold at 0.6 ***
+```{r}
+threshold   <- 0.6 #if predicted testcase > threshold, predict as "UP". Otherwise, predice as "DOWN"
+status.test <- ifelse(testcase >= threshold, 1, 0)
+t           <- table(testset$direction, status.test)
+t
+```
+
+```{r}
+accuracy    <- 146/(146 + 89)
+print(paste("accuracy", round(accuracy, digits = 2)))
+
+sensitivity <- 0/(0 + 89)
+print(paste("sensitivity", round(sensitivity, digits = 2)))
+
+specificity <- 146/(146 + 0)
+print(paste("specificity", round(specificity, digits = 2)))
+```
+

@@ -1,0 +1,76 @@
+---
+title: "Data visualization with ggplot2 and plotly"
+output: html_notebook
+---
+
+## Data Visualization with ggplot2
+
+Install and load 'ggplot2' package
+
+```{r}
+#install.packages('ggplot2')  #If this is the first time you use ggplot, need to install first.
+library(ggplot2)
+```
+
+
+
+
+
+
+**Histogram**
+```{r}
+ggplot(diamonds, aes(x = carat)) +        #initialize plot with ggplot()
+geom_histogram(bins =30)                 #Add layer with geom_histogram()
+
+#Try bins = 5
+```
+
+
+*** Barplot ***
+
+```{r}
+counts <- table(diamonds$clarity)    #Count how many samples in each clarity category
+counts
+
+```
+
+
+```{r}
+ggplot(diamonds, aes(x = clarity)) +           #Initialize plot with ggplot()
+geom_bar(fill = "lightblue", color = "black")  #Add layer with geom_bar()
+```
+
+
+**Boxplot**
+
+Explore price distribution of the daimond in each clarity category
+```{r}
+ggplot(diamonds, aes(x = clarity, y = price)) +   #Initialize plot with ggplot()
+geom_boxplot(fill = "salmon", color = "red")      #Add layer with geom_bar()
+```
+
+#Scatter plot - Effect of carat and clarity
+```{r}
+p <- ggplot(diamonds, aes(x = carat, y = price)) +  #initialize plot with ggplot( )
+     geom_point(aes(color = clarity))               #Add layer of points with geom_point
+p
+```
+
+
+
+## Interactive Data Visualization with Plotly in ggplot
+
+Install and load 'plotly' library
+```{r}
+#install.packages("plotly")
+
+library(plotly)
+
+```
+
+Get a glimpse with 'ggplotly'
+```{r}
+p <- ggplot(diamonds, aes(x = carat, y = price)) +  #initialize plot with ggplot( )
+     geom_point(aes(color = clarity))               #add layer of points with geom_point
+ggplotly(p)                                         #make interactive with ggplotly
+```

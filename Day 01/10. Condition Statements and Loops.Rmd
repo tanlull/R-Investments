@@ -1,0 +1,111 @@
+---
+title: "05. Condition and Loop"
+output: html_notebook
+---
+
+**If statements**
+
+If
+```{r}
+date <- 15
+if(date == 1){
+  print("hello")
+}
+```
+
+
+If-else
+```{r}
+chance <- 0.4
+
+if(chance > 0.5){
+  print("Bet Now!")
+}else{
+  print("Keep the money.")
+}
+```
+
+If-else if-else
+```{r}
+chance <- 0.6
+
+if(chance > 0.8){
+  print("Shut up and take my money.")
+}else if(chance > 0.5){
+  print("Wait and see.")
+}else{
+  print("Keep the money.")
+}
+```
+
+
+**For loop**
+```{r}
+a <- c(1,3,5,7,9)
+
+for(i in 1:length(a))
+{
+  print(a[i] + 1)
+}
+```
+
+```{r}
+a2 <- double()
+for(i in 1:length(a))
+{
+  a2[i] <- i + a[i]
+}  
+a2
+```
+
+
+```{r}
+fruit <- c("apple", "banana", "orange")
+fruitlength <- double()
+for(i in fruit)
+{
+  fruitlength[i] <- nchar(i)  
+}
+fruitlength
+```
+
+
+
+**While loop**
+```{r}
+stock_price <- 54.50
+
+while(stock_price <= 56.0){
+  randomUniform = runif(1, 0.98, 1.02)
+  stock_price <- stock_price*randomUniform
+  print(randomUniform)
+  print(stock_price)
+}
+print("Sell Now!")
+```
+
+**Controlling loop**
+```{r}
+#Skip iteration with next
+for(i in 1:6)
+{
+  if(i == 4)
+  {
+    next
+  }
+  print(i)
+}
+```
+
+```{r}
+#Break iteration with break
+for(i in 1:6)
+{
+  if(i == 4)
+  {
+    break
+  }
+  print(i)
+}
+```
+

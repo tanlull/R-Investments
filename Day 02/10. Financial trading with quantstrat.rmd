@@ -1,0 +1,187 @@
+---
+title: "Financial trading with Quantstrat"
+output: html_notebook
+---
+
+Install and load packages
+```{r}
+#install.packages("devtools")
+require(devtools)
+# # quantstrat and blotter are still actively under developed. cannot install from CRAN
+#install_github("braverock/blotter") 
+#install_github("braverock/quantstrat")
+
+library(quantstrat)
+```
+Three important dates
+```{r}
+initDate <- "2010-01-01"
+from     <- "2015-01-01"
+to       <- "2019-06-30"
+
+initDate
+from 
+to
+```
+
+Setting up Quantstrat
+```{r}
+#Set system environment timezone
+Sys.setenv(TZ = "UTC")
+
+#Set currency
+currency("THB")
+
+#Obtain financial data
+getSymbols("PTTEP.BK", from = from, to = to, src = "yahoo", adjust = TRUE)
+
+#Remove NAs 
+PTTEP.BK <- na.omit(PTTEP.BK)
+
+#Treat as basic equity
+stock("PTTEP.BK", currency = "THB") #use stock() to tell quantstrat what instruments will be present for the simulation
+```
+
+Trade size and initial equity
+```{r}
+tradesize <- 100000 #THB #amount you wager on each trade
+initeq    <- 100000  #tradesize should not be more than initeq
+```
+
+
+```{r}
+#One account, one portfolio, one strategy
+strategy.st <- portfolio.st <- account.st <- "firststrat"
+
+#If you ran the strategy already, you need to remove it from
+#your environment using rm.strat()
+rm.strat(strategy.st)
+```
+
+Initialize...
+
+```{r}
+#An account is comprised of portfolios, and a portfolio is comprised of strategies. 
+#For your first strategy, there will only be one account, one portfolio, and one strategy.
+
+#Initialize portfolio
+initPortf(portfolio.st,
+          symbols = "PTTEP.BK",
+          initDate = initDate,
+          currency = "THB")
+
+#Initialize account
+initAcct(account.st,
+         portfolios = portfolio.st,
+         initDate = initDate,
+         currency = "THB",
+         initEq = initeq)
+
+#Initialize orders
+initOrders(portfolio.st, initDate = initDate)
+
+#Initialize strategy
+strategy(strategy.st, store = TRUE)
+
+```
+
+Add indicators (SMA10 and SMA20)
+```{r}
+#Call add.indicator() with strategy, name, arguments, and label
+add.indicator(strategy = strategy.st,
+              name = "SMA",        
+              arguments = list(x = quote(Cl(mktdata)), n = 10),
+              label = "SMA10")     
+
+add.indicator(strategy = strategy.st,
+              name = "SMA",
+              arguments = list(x = quote(Cl(mktdata)), n = 20),
+              label = "SMA20")
+#Provide indicator with simple and descriptive name such as "SMA10" not just "SMA"
+```
+
+Apply indicators
+```{r}
+test_init <- applyIndicators(strategy.st, mktdata = (PTTEP.BK))
+head(test_init)
+```
+
+Add singals
+```{r}
+add.signal(strategy.st, name = "sigCrossover",
+           
+           # We're interested in the relationship between the SMA10 and the SMA20
+           arguments = list(columns = c("SMA10", "SMA20"),
+                            
+                            # The relationship is that the SMA10 crosses under the SMA20
+                            relationship = "lt"),
+           
+           # Label it filterexit
+           label = "filterexit")
+
+
+add.signal(strategy.st, name = "sigCrossover",
+           
+           # We're interested in the relationship between the SMA10 and the SMA20
+           arguments = list(columns = c("SMA10", "SMA20"),
+                            
+                            # The relationship is that the SMA10 crosses under the SMA20
+                            relationship = "gt"),
+           
+           # Label it filterexit
+           label = "filterentry")
+```
+
+Apply signal to strategy
+```{r}
+#Apply signals we wrote to our strategy
+test <- applySignals(strategy = strategy.st, mktdata = test_init)
+head(test)
+```
+
+Add rules
+```{r}
+#Exit rule
+add.rule(strategy.st, name = "ruleSignal", 
+         arguments = list(sigcol = "filterexit", #signal column
+                          sigval = TRUE,         #value the signal should take to trigger the rule
+                          orderqty = "all",      #how much you want to buy or sell
+                                                 #"all" - reduce your position to zero instantly
+                          ordertype = "market", 
+                          #you will buy/sell at market price regardless of market condition
+                          #alternative is 'limit order' - transaction occurs if conditions are met
+                          
+                          orderside = "long",   #either "long" or "short"
+                          replace = FALSE,      #whether to ignore all other signals on the same date that    strategy acts upon one signal
+                          prefer = "Open"),     #When to take action: open, high, low, close 
+         type = "exit")
+
+#Enter rule
+add.rule(strategy.st, name = "ruleSignal", 
+         arguments = list(sigcol = "filterentry", sigval = TRUE, orderqty = 1000, 
+                          ordertype = "market", orderside = "long", 
+                          replace = FALSE, prefer = "Open"), 
+         type = "enter")
+```
+
+Run your strategy
+```{r}
+# Use applyStrategy() to apply your strategy. Save this to out
+out <- applyStrategy(strategy = strategy.st, portfolios = portfolio.st)
+
+# Update your portfolio (portfolio.st)
+updatePortf(portfolio.st)
+daterange <- time(getPortfolio(portfolio.st)$summary)[-1]
+
+# Update your account (account.st)
+updateAcct(account.st, daterange)
+updateEndEq(account.st)
+
+```
+
+Trade statistics
+```{r}
+tStats <- tradeStats(Portfolios = portfolio.st)
+tStats
+```
+

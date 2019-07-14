@@ -1,0 +1,65 @@
+---
+title: "Statistics of Returns and Sharpe Ratio"
+output: html_notebook
+---
+
+*** Load package ***
+```{r}
+install.packages('PerformanceAnalytics')
+library(PerformanceAnalytics)
+library(quantmod)
+```
+
+
+***Getting data***
+```{r}
+aot   <- getSymbols(Symbols = 'AOT.BK', src = 'yahoo', auto.assign = FALSE, warnings = FALSE, from = "2013-01-01", to = "2018-12-31")
+price <- Ad(aot)
+head(price, n = 3)
+```
+
+
+*** Calculate monthly return ***
+```{r}
+returns <- periodReturn(price, period = 'monthly', type = 'arithmetic')
+head(returns, n = 5)
+```
+
+Calculate mean and sd of monthly returns
+```{r}
+#mean
+m <- mean(returns, na.rm = TRUE)
+m
+```
+
+```{r}
+#sd 
+stdev <- sd(returns, na.rm = TRUE)
+stdev
+```
+**Calculate Sharpe Ratio**
+
++ Definition: An average return earned in excess of the risk-free rate per unit of volatility or total risk. The ratio was developed by Nobel laureate William F. Sharpe. It helps investor understands the return of an investment copare to risk.
+
+Calculate Sharpe ratio from equation
+```{r}
+CalSharpe <- (m - 0.007)/stdev
+CalSharpe
+```
+
+Calculate Sharpe ratio using SharpeRatio( ) function
+```{r}
+SharpeFunction  <- SharpeRatio(returns, Rf = 0.007)
+SharpeFunction
+```
+
+Annualized Sharpe Ratio
+```{r}
+SharpeRatio(returns, Rf = 0.007, annualize = TRUE)
+```
+
+
+```{r}
+SharpeRatio.annualized(returns, Rf = 0.007, scale = 12)
+```
+

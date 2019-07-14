@@ -1,0 +1,124 @@
+---
+title: "Data Transforming"
+output: html_notebook
+---
+
+Transforming data with the Tidyverse
+
+*** Load library ***
+```{r}
+#install.packages("dplyr")
+library(dplyr)
+```
+```{r}
+data(mtcars)
+str(mtcars)
+```
+
+
+*** Filter verb ***
+
+Filter for one variable
+```{r}
+
+filter(mtcars, cyl == 6)
+```
+
+
+Filter for two variables
+```{r}
+filter(mtcars, cyl == 6, mpg > 18)
+```
+
+
+*** arrange verb ***
+```{r}
+arrange(mtcars, mpg)
+
+```
+
+Sort rows in descending order
+```{r}
+arrange(mtcars, desc(mpg))
+```
+
+
+## Subsetting Data
+
+Subset data with [ ]
+
+```{r}
+#Subset dataframe by row
+mtcars[1:3, ]              #Subset only rows 1 - 3 of mtcars dataset
+```
+
+```{r}
+#Subset dataframe by column
+mtcars[, c(2,4)]             #Subset only columns 2 and 4 of mtcars dataset
+```
+
+
+Generate dataframe and list
+```{r}
+Name <- c("Captain America", "Iron Man", "Black Widow", "Thor", "Scarlet Witch")
+
+gender <- c("m", "m", "f", "m", "f")
+
+cast <- c("Chris Evans", "Robert Downey Jr.", "Scarlett Johansson", "Chris Hemsworth", "Elizabeth Olsen")
+```
+
+
+Generate data frame
+```{r}
+Marvel.data <- data.frame(Name, gender, cast)
+Marvel.data
+```
+
+Generate list
+```{r}
+Marvel.list <- list(Name, gender = gender, cast = cast)
+Marvel.list
+```
+
+
+Subset list
+```{r}
+Marvel.list[[1]]
+```
+
+```{r}
+Marvel.list[[2]]
+```
+
+```{r}
+Marvel.list[[3]]
+```
+
+
+```{r}
+Marvel.list$cast
+```
+
+```{r}
+Marvel.data$gender
+```
+
+
+
+Subset data frame by row number
+
+```{r}
+#subset data frame by row
+Marvel.data[c(3,5), ]
+```
+
+Subset data frame by a condition
+```{r}
+subset(Marvel.data, gender == "f")
+```
+
+
+
+
+
+

@@ -1,0 +1,144 @@
+---
+title: "Data Visualization with base package"
+output: html_notebook
+---
+
+*** Base Plot ***
+
+Base plot is already in base package. No need to load library.
+```{r}
+speed    <- 20:60 #km/hr
+time     <- 2 #hr
+distance <- speed * time
+distance
+
+```
+
+```{r}
+#plot(x = speed, y = distance)      #plot() means scatter plot
+
+#or 
+
+plot(speed, distance)
+```
+
+*** Customizing plot ***
+
+### Important base graphics parameters
+
++ main   - character string for chart title
+
++ xlab   - character string for x-axis label
+
++ ylab   - character string for y-axis label
+
++ col    - specify color
+
++ pch    - specify plotting symbol
+
++ lwd    - line width
+
++ lty    - line type
+
++ type   - type of plot (line, point, .)
+  
+
+```{r}
+plot(x = speed, y = distance,       #specify what's on x-axis and y-axis
+     main = "speed vs distance",    #chart title
+     xlab = "speed (km/hr)",        #x-axis label
+     ylab = "distance (km)",        #y-axis label
+     col = "blue",                  #plot color
+     pch = 18)                      #plot symbol
+```
+
+
+Different type arguments
+
++ "p"   - Points
+
++ "l"   - Lines
+
++ "b"   - Both points and lines
+
++ "c"   - The lines part alone of "b"
+
++ "o"   - Both points and lines "overplotted"
+
++ "h"   - Histogram like (or high-density) vertical lines
+
++ "n"   - No plotting
+
+
+```{r}
+par(mfrow = c(1,2)) #multiple plots in one screen
+plot(speed, distance, type = "p", main = "Type 'p'")
+plot(speed, distance, type = "l", main = "Type 'l'")
+```
+
+Multiple variables in one plot
+
+```{r}
+speed     <- 0:60
+distance1 <- speed * time - 5
+distance2 <- speed * time + 5
+plot(speed, distance1, type = "l",col = "blue")
+lines(speed, distance2, lty = 3, lwd = 3, col = "red")  #Try lty = 1 - 6
+
+#Try
+#points(speed, distance2, col = "red", pch = 8)
+```
+
+
+
+
+Multiple graphs in one plot
+```{r}
+x1 <- c(1, 3, 5, 7, 9)
+x2 <- c(2, 4, 6, 8, 10)
+y1 <- x1 + x2
+y2 <- x2 - x1
+y3 <- (x1 + x2)/2
+```
+
+
+```{r}
+par(mfrow = c(2,3))             #Multiple graphs in one plot: Plots arranged in 2 rows 3 columns
+plot(x1, y1, pch = 1, col = 1)  #Call plot() 6 times for 2 x 3 plots
+plot(x1, y2, pch = 2, col = 2)
+plot(x1, y3, pch = 3, col = 3)
+plot(x2, y1, pch = 4, col = 4)
+plot(x2, y2, pch = 5, col = 5)
+plot(x2, y3, pch = 6, col = 6)
+```
+
+
+*** Visualization with 'diamonds' dataset ***
+```{r}
+#install.packages('ggplot2')  #If this is the first time you use ggplot, need to install first.
+library(ggplot2)
+data(diamonds)
+head(diamonds)
+```
+
+Explore the dataset
+```{r}
+str(diamonds)    #check definition of each variable in slide deck
+```
+
+
+Scatter Plot
+```{r}
+plot(x = diamonds$carat, y = diamonds$price)
+```
+
+Customizing plot
+```{r}
+plot(x = diamonds$carat, y = diamonds$price, 
+     main = "Diamond Price by Carat", 
+     xlab = "Carat", 
+     ylab = "Price", 
+     col = "blue", 
+     pch = 5)
+```
+

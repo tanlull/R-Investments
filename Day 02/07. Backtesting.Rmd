@@ -1,0 +1,71 @@
+---
+title: "Backtesting with Long and Short Strategy"
+output: html_notebook
+---
+
+**Install and load packages **
+```{r}
+#install.packages("quantmod")
+#install.packages("xts")
+#install.packages("zoo")
+#install.packages("PerformanceAnalytics")
+library(xts)
+library(zoo)
+library(quantmod)
+library(PerformanceAnalytics)
+```
+
+
+** Get historical data of the chosen stock **
+```{r}
+aot <- getSymbols(Symbols = 'AOT.BK', src = 'yahoo', 
+                  auto.assign = FALSE, getSymbols.warnings4.0 = FALSE, from = "2016-01-01", to = "2019-01-11")
+head(aot)
+```
+
+** Use adjusted close price to calculate indicator (in this case, MACD) **
+```{r}
+data2      <- Ad(aot)
+macd       <- MACD(data2, nFast = 12, nSlow = 26, nSig = 9, maType = SMA, percent = FALSE)
+data2      <- cbind(data2, macd)
+data2[30:40, ] #show row 30 - 40 of data
+```
+
+
+Trading signal
+
++ If the MACD signal crossed above the signal line, we long.
+
++ If the MACD signal crossed below the signal line, we short.
+
++ Use lag operator to eliminate look ahead bias
+```{r}
+signal <- lag(ifelse(macd$macd < macd$signal, -1, 1)) # -1 = short , 1 = long
+signal[30:40, ]
+```
+
+### Execute the strategy on the historical data
+
+Calculate return
+```{r}
+returns <- ROC(data2$AOT.BK.Adjusted)*signal 
+#ROC = rate of change provides the percentage diffence between the two closing prices.
+returns <- na.omit(returns)
+head(returns)
+```
+
+### Check performance
+```{r}
+portfolio <- exp(cumsum(returns))
+plot(portfolio)
+```
+
+```{r}
+charts.PerformanceSummary(returns)
+```
+
+
+```{r}
+table.Drawdowns(returns, top = 5)
+```
+

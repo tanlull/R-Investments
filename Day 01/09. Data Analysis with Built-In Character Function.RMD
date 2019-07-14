@@ -1,0 +1,99 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+** Character functions **
+```{r}
+x <- "abcdef"
+#substr(x, start, stop) - Extract substrings in a character vector
+substr(x, start = 2, stop = 4)
+```
+
+```{r}
+#substr(x, start, stop) <- "string" - Replace substrings in a character vector
+substr(x, 2, 4) <- "123"
+x
+```
+
+```{r}
+#grep(pattern, x) - search for pattern in x
+y <- c("a", "b", "c", "d", "e")
+grep("b", y)
+```
+
+
+```{r}
+#sub(pattern, replacement, x) - search for pattern in x and replace with replacement
+sub("b", "z", y)
+```
+
+```{r}
+#paste(..., sep = "") - concatenate strings by using sep to separate them
+text1 <- "abc"
+text2 <- "def"
+
+paste(text1, text2, sep = ",")
+```
+
+```{r}
+text3 <- c("a", "b", "c")
+text4 <- c("d", "e", "f")
+
+paste(text3, text4, sep = " ")
+```
+
+```{r}
+#toupper(x) - change x to uppercase
+text5 <- "abcdef"
+toupper(text5)
+```
+
+```{r}
+#tolower(x) - change x to lower
+text6 <- "ABCDEF"
+tolower(text6)
+```
+
+
+```{r}
+#Calvin Klein changes it's logo from 'Calvin Klein' to 'CALVIN KLEIN'. Let's help CK.
+
+logo    <- 'Calvin Klein'
+
+newlogo <- toupper(logo)
+newlogo
+```
+
+
+
+Matrix
+```{r}
+my_matrix <- matrix(1:6, nrow = 3, ncol = 2)
+#my_matrix <- matrix(c(2,4,6,8,10,12), nrow = 3, ncol = 2, byrow = TRUE)
+my_matrix
+```
+
+Column binding and row binding with cbind and rbind
+```{r}
+ptt <- c(49.25, 51.00, 49.50, 49.75, 49.25)
+scc <- c(410, 418, 416, 426, 422)
+```
+
+```{r}
+rbind(ptt, scc)
+```
+
+```{r}
+cbind(ptt, scc)
+```
+
+```{r}
+m2 <- cbind(ptt, scc)
+m2
+```
+
+```{r}
+m2transpose <- t(m2)
+m2transpose
+```

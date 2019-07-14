@@ -1,0 +1,140 @@
+---
+title: "Technical Analysis Indicators"
+output: html_notebook
+---
+
+**Install package for technical analysis**
+
+Install and load library
+```{r}
+install.packages("TTR")
+install.packages('xtsExtra')
+
+```
+
+```{r}
+library(quantmod)
+library(TTR)
+library(xts)
+library(zoo)
+```
+
+Load historical data (Input)
+```{r}
+pttep     <- read.csv("data/PTTEP.csv", stringsAsFactors = FALSE)
+head(pttep, n = 3)
+```
+
+```{r}
+class(pttep)
+```
+
+
+Notice that Index column is character class. We need to convert it to Date before converting to xts.
+```{r}
+#Convert Index column from character to date.
+pttep[,1] <- as.Date(pttep[,1])
+head(pttep, n = 3)
+```
+
+```{r}
+#Convert to xts object
+pttep.xts <- as.xts(pttep[,-1], order.by = pttep$Index)
+#subset data
+pttep.xts <- pttep.xts["2018-01-01/"] #From date -> to date ( / = to date -- to the end)
+head(pttep.xts, n = 3)
+```
+
+```{r}
+class(pttep.xts)
+```
+
+
+
+**Moving Averages**
+
+Calculate 10-day Simple Moving Average (SMA) of the adjusted close price column.
+```{r}
+sma10 <- SMA((pttep.xts$PTTEP.BK.Adjusted), n = 10)
+head(sma10, n = 20)
+```
+
+Calculate 20-day Simple Moving Average (SMA) of the adjusted close price column.
+```{r}
+sma20 <- SMA((pttep.xts$PTTEP.BK.Adjusted), n = 20)
+head(sma20, n = 30)
+```
+
+Plot moving average crossover
+```{r}
+sma <- cbind(sma10, sma20, pttep.xts$PTTEP.BK.Adjusted)
+colnames(sma) <- c("sma10", "sma20", "price")
+head(sma)
+
+```
+
+```{r}
+plot.xts(sma, screeens = factor(1,1), legend.loc = "bottomright", auto.legend = TRUE, 
+         col = c("black", "red", "blue"), lty = c(1, 1, 3))
+```
+
+
+
+**Bollinger Bands**
+
++ A set of lines plotted two standard deviations (positively and negatively) away from a simple moving average of the security's price. Bollinger band was developed by famous technical trader John Bollinger. By default, the period is n = 20.
+
+```{r}
+bb20 <- BBands(pttep.xts$PTTEP.BK.Adjusted, n = 20, sd=2.0)
+head(bb20, n = 30)
+```
+
+Plot Bollinger Band
+
+```{r}
+Bband.Data <- data.frame(pttep[pttep$Index >= "2018-01-01",c(1,7)], bb20)
+head(Bband.Data)
+plot(Bband.Data$Index, Bband.Data$PTTEP.BK.Adjusted, pch = 16, cex = 0.5)
+lines(Bband.Data$Index, Bband.Data$PTTEP.BK.Adjusted, col = 'red')
+lines(Bband.Data$Index, Bband.Data$up, col = 'brown')
+lines(Bband.Data$Index, Bband.Data$dn, col = 'brown')
+lines(Bband.Data$Index, Bband.Data$mavg, col = 'blue')
+```
+
+**Relative Strength Indicator - RSI**
+The Relative Strength Index (RSI), developed by J. Welles Wilder, is a momentum oscillator that measures the speed and change of price movements. The RSI oscillates between zero and 100. Traditionally the RSI is considered overbought when above 70 and oversold when below 30. Source: Fidelity.com
+
+
+```{r}
+rsi14 <- RSI(pttep.xts$PTTEP.BK.Adjusted, n = 14)
+head(rsi14, n = 20)
+```
+
+```{r}
+chartSeries(pttep.xts$PTTEP.BK.Adjusted, theme = chartTheme("white"), TA = 'addRSI(n = 14)')
+```
+
+#Visualize RSI and Bollinger Bands in one chart
+```{r}
+data <- pttep.xts$PTTEP.BK.Adjusted
+chartSeries(data, theme = chartTheme("black"), TA = c(addBBands(),addRSI()))
+```
+
+
+**MACD**
+Moving Average Convergence Divergence is a trend-following momentum indicator. The MACD is calculated by subtracting the 26-period Exponential Moving Average (EMA) from the 12-period EMA. 
+If the 12-period EMA is above the 26-period EMA, the MACD will be above its "baseline" of zero. If the shorter EMA is below the longer EMA, the MACD will be below its baseline. 
+Traders may buy the security when the MACD crosses above its signal line and sell, or short, the security when the MACD crosses below the signal line.
+
+```{r}
+macd <- MACD(pttep.xts$PTTEP.BK.Adjusted, nFast = 12, nSlow = 26, nSig = 9, maType = SMA)
+head(macd, n = 30)
+```
+
+```{r}
+#plot MACD
+chartSeries(pttep.xts$PTTEP.BK.Adjusted, theme = chartTheme("white"), TA = 'addMACD(fast = 12, slow = 26, signal = 9)')
+
+#or for default function
+#chartSeries(pttep.xts$PTTEP.BK.Adjusted, theme = chartTheme("white"), TA = 'addMACD()')
+```
